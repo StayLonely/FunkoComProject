@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.springframework.org/security/tags">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funko Collectibles</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<header>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="/news">News</a></li>
+            <li><a href="#">Posts</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">My Profile</a></li>
+            <li>
+                <button id="show-new-post-form">Create New Post</button>
+            </li>
+            <li>
+                <sec:authorize access="isAuthenticated()">
+                    <a href="#">My profile</a>
+                </sec:authorize>
+                <sec:authorize access="!isAuthenticated()">
+                    <button id="register-button">Register</button>
+                    <button id="login-button">Login</button>
+                </sec:authorize>
+            </li>
+
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section id="news-section">
+        <h1>Latest Funko News</h1>
+        <article th:each="n : ${news}">
+            <h3 th:text="${n.getName()}">value</h3>
+            <p th:text="${n.getContent()}"> value</p>
+            <a th:href="@{news/{id}(id=${n.getId()})}">Read More</a>
+        </article>
+    </section>
+</main>
+
+
+<div id="new-post-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Create a New Post</h2>
+        <form id="new-post-form"  th:method="POST" th:action="@{/news/create}" th:object="${post}" >
+            <label for="post-title" >Title:</label>
+            <input type="text" id="post-title" name="post-title" required th:field="*{name}" >
+
+            <label for="post-content">Content:</label>
+
+
+            <textarea  th:field="*{content}" id="post-content" name="post-content" required></textarea>
+
+
+            <label for="post-checkbox">Is news?</label>
+
+            <input type="checkbox" name="post-checkbox" id="post-checkbox" th:field="*{isNews}" >
+
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+<div id="register-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Registration</h2>
+        <form id="register-form">
+            <label for="register-username">Username:</label>
+            <input type="text" id="register-username" name="register-username" required>
+
+            <label for="register-password">Password</label>
+            <input type="password" id="register-password" name="register-password" required>
+
+            <label for="register-email">Email:</label>
+            <input type="email" id="register-email" name="register-email" required>
+
+            <label for="register-description">Description:</label>
+            <textarea id="register-description" name="register-description"></textarea>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</div>
+
+<div id="login-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" name="login-username" required>
+
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="login-password" required>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+
+
+<footer id="site-footer">
+    <p>&copy; 2023 Funko Collectibles. All rights reserved.</p>
+</footer>
+
+<script>
+    const showNewPostForm = document.getElementById('show-new-post-form');
+    const newPostModal = document.getElementById('new-post-modal');
+    const loginButton = document.getElementById('login-button');
+    const loginModal = document.getElementById('login-modal');
+    const registerButton =document.getElementById("register-button")
+    const registerModal = document.getElementById("register-modal")
+
+
+
+    const modals = document.querySelectorAll('.modal');
+
+    const closeButtons = document.querySelectorAll('.close-button');
+
+    showNewPostForm.addEventListener('click', () => {
+        newPostModal.classList.remove('hidden');
+        newPostModal.classList.add('visible')
+    });
+
+    loginButton.addEventListener('click', () => {
+        loginModal.classList.remove('hidden');
+        loginModal.classList.add('visible')
+    });
+    registerButton.addEventListener('click', () => {
+        registerModal.classList.remove('hidden');
+        registerModal.classList.add('visible')
+    });
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            modals.forEach(modal => {
+                modal.classList.add('hidden');
+                modal.classList.remove('visible');
+            });
+        });
+    });
+
+
+    window.addEventListener('click', (event) => {
+        if (event.target == newPostModal) {
+            newPostModal.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>
+
+
+
+

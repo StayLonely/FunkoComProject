@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funko Collectibles</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<header>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="/news">News</a></li>
+            <li><a href="#">Posts</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">My Profile</a></li>
+
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <section id="news-section">
+        <h1>News</h1>
+
+        <article>
+            <div class="news-container">
+                <h2 th:text="${post.getName()}">Заголовок новости</h2>
+                <p th:text="${post.getContent()}">Основной текст новости</p>
+            </div>
+            <form th:method="DELETE" th:action="@{/news/delete/{id}(id=${post.getId()})}" class="delete-news">
+                <input type="submit" value="Delete">
+            </form>
+            <button value="Update" id="update-button">Update </button>
+        </article>
+
+        <section id="comments-section">
+            <h2>Comments</h2>
+            <div class="comment">
+                <p>This is a sample comment.</p>
+                <button class="delete-comment">Delete</button>
+            </div>
+            <div class="comment">
+                <p>Another sample comment.</p>
+                <button class="delete-comment">Delete</button>
+            </div>
+            <div class="add-comment">
+                <input type="text" placeholder="Add your comment">
+                <button class="submit-comment">Submit</button>
+            </div>
+        </section>
+
+    </section>
+
+    <div id="new-post-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Update post</h2>
+        <form id="update-post-form"  th:method="PATCH" th:action="@{/news/{id}(id=${post.getId()})}" th:object="${post}" >
+            <label for="post-title" >Title:</label>
+            <input type="text" id="post-title" name="post-title" required th:field="*{name}" >
+
+            <label for="post-content">Content:</label>
+            <input type="text"  th:field="*{content}" id="post-content" name="post-content" required>
+
+            <label for="post-checkbox">Is news?</label>
+
+            <input type="checkbox" name="post-checkbox" id="post-checkbox" th:field="*{isNews}" >
+
+
+            <button type="submit">Submit</button>
+        </form>
+        </div>
+    </div>
+
+</main>
+
+
+
+<footer id="site-footer">
+    <p>&copy; 2024 Funko Collectibles. All rights reserved.</p>
+</footer>
+
+<script>
+    const updateButton = document.getElementById('update-button')
+    const updatePostform = document.getElementById('new-post-modal');
+    const closeButton = document.querySelector('.close-button');
+
+    updateButton.addEventListener('click', () => {
+        updatePostform.classList.remove('hidden');
+        updatePostform.classList.add('visible')
+    });
+
+    closeButton.addEventListener('click', () => {
+        updatePostform.classList.add('hidden');
+        updatePostform.classList.remove('visible');
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == newPostModal) {
+            newPostModal.classList.add('hidden');
+        }
+    });
+</script>
+</body>
+</html>
+
+
+
+
